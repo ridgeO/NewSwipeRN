@@ -56,6 +56,10 @@ export default class CardContainer extends React.Component {
           keyExtractor={(item) => item.url}
           scrollEnabled={false}
         />
+        <Button
+          title={'powered by NewsAPI.org'}
+          onPress={''}
+        />
       </View>
     );
   }
