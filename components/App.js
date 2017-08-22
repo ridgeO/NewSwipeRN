@@ -5,13 +5,13 @@ import {
   Text,
   View
 } from 'react-native';
-import CardContainer from './CardContainer.js';
+import ArticleSwiper from './ArticleSwiper.js';
 
 export default class NewSwipeRN extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <CardContainer/>
+        <ArticleSwiper/>
       </View>
     );
   }
@@ -20,10 +20,7 @@ export default class NewSwipeRN extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
+      },
 });
 
 AppRegistry.registerComponent('NewSwipeRN', () => NewSwipeRN);
