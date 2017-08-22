@@ -11,18 +11,23 @@ import CardStack from 'react-native-card-stack';
 
 export default class SourceSwiper extends Component {
 
+  static navigationOptions = {
+    title: 'Sources'
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      cards: [],
+      allCards: [],
+      displayedCards: [],
     };
   }
 
   componentWillMount() {
-      this.handleAdd();
+    this.pullSources();
   }
 
-  async handleAdd() {
+  async pullSources() {
     try {
       let response = await fetch('https://newsapi.org/v1/sources');
       let result = await response.json();
@@ -34,20 +39,39 @@ export default class SourceSwiper extends Component {
       }
       console.log(resultKeyed)
       this.setState({
-        cards: resultKeyed
+        allCards: resultKeyed
       });
-      console.log(this.state.cards)
+      console.log(this.state.allCards)
+      let selection = []
+      for (var i = 0; i < 3; i++){
+        selection.push(this.state.allCards.shift(i))
+      }
+      this.setState({
+        allCards: this.state.allCards,
+        displayedCards: selection.reverse()
+      });
+      console.log(this.state.displayedCards)
     } catch (err) {
       alert(JSON.stringify(err));
+    }
+  }
+
+  handleAdd() {
+    if (this.state.allCards.length > 0) {
+      let newCard = this.state.allCards.shift(0)
+      console.log(newCard)
+      this.setState({
+        displayedCards: [newCard, ...this.state.displayedCards]
+      });
     }
   };
 
   handleRemove = (index) => {
-    let start = this.state.cards.slice(0, index);
-    let end = this.state.cards.slice(index + 1);
+    this.state.displayedCards.pop()
     this.setState({
-      cards: start.concat(end),
+      displayedCards: this.state.displayedCards
     });
+    this.handleAdd();
   };
 
   renderCard(cardObject) {
@@ -66,7 +90,7 @@ export default class SourceSwiper extends Component {
   render() {
     return (
       <CardStack
-        cardList={this.state.cards}
+        cardList={this.state.displayedCards}
         renderCard={this.renderCard}
         cardHeight={flattenStyle(Styles.card).height}
         cardWidth={flattenStyle(Styles.card).width}

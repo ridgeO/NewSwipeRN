@@ -11,43 +11,64 @@ import CardStack from 'react-native-card-stack';
 
 export default class ArticleSwiper extends Component {
 
+  static navigationOptions = {
+    title: 'Articles'
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      cards: [],
+      allCards: [],
+      displayedCards: [],
     };
   }
 
   componentWillMount() {
-      this.handleAdd();
+    this.pullarticles();
   }
 
-  async handleAdd() {
+  async pullarticles() {
     try {
-      let response = await fetch('https://newsapi.org/v1/articles?source=techcrunch&apiKey=608bdc30ab01443daca0c1768e10127d');
+      let response = await fetch('https://newsapi.org/v1/articles?source=bbc-news&apiKey=608bdc30ab01443daca0c1768e10127d');
       let result = await response.json();
-      console.log(result)
       let resultKeyed = []
       for (var i = 0; i < result.articles.length; i++){
         result.articles[i].key = result.articles[i].url.replace(/[^\w]/g,'');
         resultKeyed.push(result.articles[i])
       }
-      console.log(resultKeyed)
       this.setState({
-        cards: resultKeyed
+        allCards: resultKeyed
       });
-      console.log(this.state.cards)
+      let selection = []
+      for (var i = 0; i < 3; i++){
+        selection.push(this.state.allCards.shift(i))
+      }
+      this.setState({
+        allCards: this.state.allCards,
+        displayedCards: selection.reverse()
+      });
     } catch (err) {
       alert(JSON.stringify(err));
+    }
+  }
+
+  handleAdd() {
+    if (this.state.allCards.length > 0) {
+      let newCard = this.state.allCards.shift()
+      console.log('new')
+      console.log(newCard)
+      this.setState({
+        displayedCards: [newCard, ...this.state.displayedCards]
+      });
     }
   };
 
   handleRemove = (index) => {
-    let start = this.state.cards.slice(0, index);
-    let end = this.state.cards.slice(index + 1);
+    this.state.displayedCards.pop();
     this.setState({
-      cards: start.concat(end),
+      displayedCards: this.state.displayedCards
     });
+    this.handleAdd();
   };
 
   renderCard(cardObject) {
@@ -66,7 +87,7 @@ export default class ArticleSwiper extends Component {
   render() {
     return (
       <CardStack
-        cardList={this.state.cards}
+        cardList={this.state.displayedCards}
         renderCard={this.renderCard}
         cardHeight={flattenStyle(Styles.card).height}
         cardWidth={flattenStyle(Styles.card).width}
