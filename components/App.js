@@ -6,12 +6,13 @@ import {
   View
 } from 'react-native';
 import ArticleSwiper from './ArticleSwiper.js';
+import SourceSwiper from './SourceSwiper.js';
 
 export default class NewSwipeRN extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ArticleSwiper/>
+        <SourceSwiper/>
       </View>
     );
   }

@@ -9,7 +9,7 @@ import {
 import flattenStyle from 'flattenStyle';
 import CardStack from 'react-native-card-stack';
 
-export default class ArticleSwiper extends Component {
+export default class SourceSwiper extends Component {
 
   constructor(props) {
     super(props);
@@ -24,13 +24,13 @@ export default class ArticleSwiper extends Component {
 
   async handleAdd() {
     try {
-      let response = await fetch('https://newsapi.org/v1/articles?source=techcrunch&apiKey=608bdc30ab01443daca0c1768e10127d');
+      let response = await fetch('https://newsapi.org/v1/sources');
       let result = await response.json();
       console.log(result)
       let resultKeyed = []
-      for (var i = 0; i < result.articles.length; i++){
-        result.articles[i].key = result.articles[i].url.replace(/[^\w]/g,'');
-        resultKeyed.push(result.articles[i])
+      for (var i = 0; i < result.sources.length; i++){
+        result.sources[i].key = result.sources[i].id.replace(/[^\w]/g,'');
+        resultKeyed.push(result.sources[i])
       }
       console.log(resultKeyed)
       this.setState({
@@ -53,10 +53,10 @@ export default class ArticleSwiper extends Component {
   renderCard(cardObject) {
     return(
       <View style={Styles.card}>
-        <ImageBackground source={{uri: cardObject.urlToImage}} style={Styles.cardImage}>
+        <ImageBackground source={{uri: cardObject.urlsToLogos.large}} style={Styles.cardImage}>
           <View style={Styles.cardText}>
-            <Text style={Styles.cardTextMain}>{cardObject.title}</Text>
-            <Text style={Styles.cardTextSecondary}>{cardObject.author}</Text>
+            <Text style={Styles.cardTextMain}>{cardObject.name}</Text>
+            <Text style={Styles.cardTextSecondary}>{cardObject.description}</Text>
           </View>
         </ImageBackground>
       </View>
